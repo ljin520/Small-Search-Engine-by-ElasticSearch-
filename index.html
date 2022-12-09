@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>Demo ElasticSearch Flask </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  </head>
+  <body style = "text-align:center">
+    <h1>Demo Board<h1/>
+    <input style = " float: none;
+                    display: block;
+                    text-align: left;
+                    width: 100%;
+                    margin: 0;
+                    padding: 14px;" 
+            class="search-box" 
+            placeholder="Enter keywords of car name to search..">
+    <ul style = "text-align:left" class="results"></ul> 
+    <script>
+      $(document).ready(function() {
+        let debounce;
+        $('.search-box').on('keydown', function (e) { 
+          clearTimeout(debounce)
+          debounce = setTimeout(() => {
+                  getAutoComplete();  
+          }, 300);
+        })
+      })
+
+      function getAutoComplete() {
+        const query = $('.search-box').val();
+        fetch(`http://localhost:5000/query?q=${encodeURIComponent(query.trim())}`)
+          .then((resp) => resp.json())
+          .then((data) => {
+                  $('.results').empty();
+                  for (let i = 0; i < data.length; i++) {
+                          if(i==0){
+                            $('.results').append(`<li>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspNAME&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  &nbsp&nbsp&nbsp&nbsp&nbsp&nbspYEAR&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp   &nbsp&nbsp&nbsp&nbsp&nbsp&nbspENGINE&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp  &nbsp&nbsp&nbsp&nbsp&nbsp&nbspPRICE</li>`)
+                          }
+                          $('.results').append(`<li>${data[i]['name']},&nbsp&nbsp  ${data[i]['year']},&nbsp&nbsp   ${data[i]['engine']},&nbsp&nbsp  USD${data[i]['price']}</li>`)
+                  }
+                })
+}
+    </script>
+  </body>
+</html>
